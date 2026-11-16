@@ -1,8 +1,5 @@
 /* V2-P0: extracted V52 logic + 2 patches (GAS config, hash assignment) */
 
-        function openSetupGuide() {
-            window.open('../../cloud-setup.html', '_blank', 'noopener');
-        }
 
         const faultOptions = [
             { id: 'normal', label: '電路功能正常' },
@@ -32,7 +29,7 @@
             document.getElementById('studentDisplay').textContent = "自由練習";
             document.getElementById('faultBtn').classList.remove('hidden');
             document.getElementById('toExamBtn').classList.remove('hidden');
-            document.getElementById('setupGuideBtn').classList.remove('hidden'); 
+            document.getElementById('setupGuideBtn')?.classList.remove('hidden'); 
             document.getElementById('oemBtn').classList.remove('hidden');
             document.getElementById('submitAnswerBtn').classList.add('hidden');
             document.getElementById('repairBtn').classList.add('hidden');
@@ -87,14 +84,14 @@
             if (isExam) {
                 faultBtn.classList.add('hidden');
                 toExamBtn.classList.add('hidden');
-                guideBtn.classList.add('hidden');
+                guideBtn?.classList.add('hidden');
                 submitBtn.classList.remove('hidden');
                 toPracticeBtn.classList.remove('hidden');
                 repairBtn.classList.remove('hidden');
             } else {
                 faultBtn.classList.remove('hidden');
                 toExamBtn.classList.remove('hidden');
-                guideBtn.classList.remove('hidden');
+                guideBtn?.classList.remove('hidden');
                 submitBtn.classList.add('hidden');
                 toPracticeBtn.classList.add('hidden');
                 repairBtn.classList.add('hidden');

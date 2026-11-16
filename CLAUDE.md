@@ -16,10 +16,9 @@
 - 單元入口：`index.html`
 - 喇叭系統模擬：`units/horn/index.html`（學生端）＋`shared/js/app.js`
 - 起動系統模擬：`units/start/index.html`＋`units/start/app-start.js`
-- 教師端：`teacher.html`（成績／調分／核章／雷達／發證）　驗證頁：`verify.html`
-- 雲端教師端：`gas/`（教師登入後匯入提交檔，部署說明 `gas/README.md`）；本機設定教學 `cloud-setup.html`
+- 老師端：Google 試算表選單版。原始碼 `gas/src`，`node tools/build-gas.cjs` 打包成 `dist/Code.gs`；老師設定說明 `setup.html`；範本試算表見 `工作筆記.md`
 - 共用：`shared/js/{config,logger,oem,assessment,submission}.js`、`units/{horn,start}/exam_bank.js`（submission.js：學生成績檔簽章與下載）
-- 雲端教師端另有：學生名單與 6 碼代碼、成績檔（CSV）檢查與匯入（`gas/Code.gs`、`gas/Teacher.html`）
+- 雲端教師端另有：學生名單與 6 碼代碼、成績檔（CSV）檢查與匯入（`gas/src/Server.gs`、`gas/src/Teacher.html`）
 
 ## 🔒 安全規則（不可違反）
 1. `.env` 或任何含 API Key 的檔案**絕對不能 commit**

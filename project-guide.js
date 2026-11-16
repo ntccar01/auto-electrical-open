@@ -3,8 +3,8 @@ window.PROJECT_GUIDE={updated:'2026-11-11',
 features:[
 {title:'喇叭系統',status:'可本機使用',text:'配線、量測與 17 題查修題庫，包含複合故障與分段維修。',url:'units/horn/',label:'開啟喇叭單元'},
 {title:'起動系統',status:'C 軌已本機驗收',text:'8 題 S 軌、3 題 W 軌與新增 3 題 C 軌。考評難度選「挑戰 C 軌」進行量測、維修與修後搖轉確認。',url:'units/start/',label:'開啟起動單元'},
-{title:'本機教師端',status:'可本機使用',text:'成績篩選、調分、核章及提交檔匯出。本機核章不會自動成為雲端核章。',url:'teacher.html',label:'開啟本機教師端'},
-{title:'雲端教師流程',status:'曾實際驗證',text:'教師白名單登入後匯入、覆閱、核章與發證。需以授權 Google 帳號開啟。',url:'cloud-setup.html',label:'查看雲端設定教學'},
+
+{title:'老師設定（試算表選單版）',status:'已實測',text:'範本建立副本→初始設定→部署→學生連結與 QR Code。',url:'setup.html',label:'開啟設定說明'},
 {title:'學生證書查驗',status:'雲端第 5 版已實測',text:'簽章驗證、遮罩班級／座號、單元與列印預覽已成功。測試資料已清理。完整身份仍需校方資料比對。',url:'gas/README.md',label:'查看部署說明'},
 {title:'面試學習歷程報告',status:'本機完成・尚未部署',text:'教師確認學生同意後產生簽章報告，顯示指定學期已核章紀錄、分項及初評／調整後成績；30 天到期。此項依你的指示暫停後續部署。',url:'gas/InterviewReport.html',label:'查看本機頁面樣式（非雲端查驗）'},
 {title:'充電與燈光系統',status:'規劃中',text:'尚無可用單元。充電系統需先確認教材電路圖與發電機端子規格。'}],
