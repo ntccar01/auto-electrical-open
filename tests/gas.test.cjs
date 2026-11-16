@@ -3,7 +3,7 @@ function send(h,records){return h.ctx.importRecords(JSON.stringify({version:1,re
 test('GAS: every public operation rejects anonymous and unauthorized users before accessing sheets',()=>{
  for(const email of ['', 'student@example.invalid']) {
   const h=makeGAS();h.setEmail(email);
-  for(const [method,args] of [['doGet',[]],['listRecords',[]],['importRecords',['{}']],['adjustRecord',['R-one',1,'test']],['approveRecord',['R-one']],['issueCertificate',['TEST_A','1','115-1']],['verifyCertificate',['NTC-1']],['getStudentVerifyUrl',[]]])assert.throws(()=>h.ctx[method](...args),/無教師權限/);
+  for(const [method,args] of [['listRecords',[]],['importRecords',['{}']],['adjustRecord',['R-one',1,'test']],['approveRecord',['R-one']],['issueCertificate',['TEST_A','1','115-1']],['verifyCertificate',['NTC-1']],['getStudentVerifyUrl',[]]])assert.throws(()=>h.ctx[method](...args),/無教師權限/);
   assert.equal(h.sheetAccess(),0);
  }
  const h=makeGAS();h.properties.delete('TEACHER_EMAILS');assert.throws(()=>h.ctx.listRecords(),/無教師權限/);
@@ -40,7 +40,7 @@ test('GAS: student verifier is public, checks the signature and exposes only mas
  const h=makeGAS();send(h,[grade('R-public')]);h.ctx.approveRecord('R-public');
  const cert=h.ctx.issueCertificate('TEST_A','1','115-1');h.setEmail('student@example.invalid');
  const route=h.ctx.doGet({parameter:{page:'verify',id:cert.certId}});assert.equal(route.file,'StudentVerify');assert.equal(route.certificateId,cert.certId);
- assert.throws(()=>h.ctx.doGet(),/無教師權限/);assert.throws(()=>h.ctx.listRecords(),/無教師權限/);assert.throws(()=>h.ctx.getStudentVerifyUrl(),/無教師權限/);
+ assert.match(h.ctx.doGet().text,/只接收學生上傳/);assert.throws(()=>h.ctx.listRecords(),/無教師權限/);assert.throws(()=>h.ctx.getStudentVerifyUrl(),/無教師權限/);
  const result=h.ctx.verifyStudentCertificate(cert.certId);assert.equal(result.valid,true);assert.equal(result.cls,'T＊＊');assert.equal(result.seat,'＊＊');assert.equal(result.semester,'115-1');
  assert.deepEqual(Array.from(result.units),['start']);assert.deepEqual(Object.keys(result).sort(),['at','certId','cls','seat','semester','units','valid']);
  assert.ok(!JSON.stringify(result).includes('TEST_A'));assert.ok(!JSON.stringify(result).includes('teacher@example.invalid'));assert.equal(h.ctx.verifyStudentCertificate('NTC-unknown').valid,false);
@@ -65,4 +65,23 @@ test('GAS: interview reports require teacher consent, isolate approved records, 
  const result=h.ctx.verifyInterviewReport(issued.reportId);assert.equal(result.valid,true);assert.equal(result.report.records.length,1);assert.equal(result.report.records[0].initialScore,60);assert.equal(result.report.records[0].finalScore,65);assert.equal(result.report.records[0].parts['量測證據'],20);assert.equal(result.report.cls,'TEST_A');assert.ok(!JSON.stringify(result).includes('PRIVATE_COMMENT'));assert.ok(!JSON.stringify(result).includes('teacher@example.invalid'));assert.equal(new Date(result.report.expiresAt)-new Date(result.report.issuedAt),30*86400000);
  h.ctx.Date=class extends Date {static now(){return new Date(issued.expiresAt).getTime();}};assert.equal(h.ctx.verifyInterviewReport(issued.reportId).valid,false);h.ctx.Date=Date;
  const sheet=h.sheets.get('NTC_InterviewReports'),stored=JSON.parse(sheet.data[1][1]);stored.payload=stored.payload.replace('TEST_A','TEST_B');sheet.data[1][1]=JSON.stringify(stored);assert.equal(h.ctx.verifyInterviewReport(issued.reportId).valid,false);
+});
+
+test('GAS 選單版：初始設定、教師限定、學生連結與版本比對',()=>{
+ const h=makeGAS();h.properties.delete('SPREADSHEET_ID');h.properties.delete('TEACHER_EMAILS');
+ h.setEmail('new@example.invalid');
+ const r=h.ctx.runSetup('115-1');assert.equal(r.done,true);assert.equal(h.properties.get('SPREADSHEET_ID'),'active-sheet');
+ assert.equal(h.properties.get('TEACHER_EMAILS'),'new@example.invalid');assert.ok(h.properties.get('CERT_SIGNING_KEY'));
+ assert.ok(h.sheets.get('NTC_Grades')&&h.sheets.get('NTC_Roster'));
+ h.ctx.runSetup('115-2');assert.equal(h.properties.get('SEMESTER'),'115-2');
+ h.setEmail('other@example.invalid');assert.throws(()=>h.ctx.runSetup('115-1'),/只有原設定者/);assert.throws(()=>h.ctx.linkInfo(),/無教師權限/);
+ h.setEmail('');assert.throws(()=>h.ctx.saveLinkInfo('',''),/無教師權限/);
+ h.setEmail('new@example.invalid');
+ const id='AKfycbxSBB7j9D75LOgqQNx9smKyjKquYHKVfd_LdoZ0XVVFfFDZT6LNwm';
+ assert.equal(h.ctx.saveLinkInfo('https://script.google.com/macros/s/'+id+'/exec','林老師').deployId,id);
+ assert.equal(h.ctx.saveLinkInfo(id,'').deployId,id);assert.equal(h.ctx.saveLinkInfo('','').deployId,'');
+ assert.throws(()=>h.ctx.saveLinkInfo('https://example.com/x',''),/格式不對/);assert.throws(()=>h.ctx.saveLinkInfo('','<b>'),/老師稱呼/);
+ assert.equal(h.ctx.versionCompare_('1.0.10','1.0.9'),1);assert.equal(h.ctx.versionCompare_('1.0.0','1.0.0'),0);assert.equal(h.ctx.versionCompare_('0.9.9','1.0.0'),-1);
+ assert.match(h.ctx.teacherPage_('roster').getContent(),/NTC_SECTION="roster"/);
+ assert.ok(!/createHtmlOutputFromFile|createTemplateFromFile/.test(require('node:fs').readFileSync(require('node:path').join(__dirname,'../dist/Code.gs'),'utf8')));
 });

@@ -1,4 +1,5 @@
-/* 教師專用 Apps Script 後端；部署前設定 SPREADSHEET_ID、TEACHER_EMAILS。
+/* 汽車電系成績試算表的 Apps Script 後端（試算表選單版）。
+ * SPREADSHEET_ID、TEACHER_EMAILS 由選單「初始設定」自動寫入。
  * 學生提交檔的分數屬前端初評，必須由教師覆閱後核章；不接受檔案內的核章。
  */
 function teacher_() {
@@ -14,7 +15,7 @@ function locked_(fn) {
 }
 function sheet_(name) {
   var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
-  if (!id) throw new Error('尚未設定 SPREADSHEET_ID。');
+  if (!id) throw new Error('尚未完成初始設定：請在試算表選單「汽車電系 → 初始設定」執行一次。');
   var book = SpreadsheetApp.openById(id);
   var sheet = book.getSheetByName(name);
   if (!sheet) { sheet = book.insertSheet(name); sheet.appendRow(['recordId', 'dataJSON']); }
@@ -49,8 +50,8 @@ function doGet(e) {
     return page.evaluate().setTitle('汽車電系雲端證書查驗');
   }
   if(e&&e.parameter&&e.parameter.page==='interview')return HtmlService.createHtmlOutputFromFile('InterviewReport').setTitle('面試學習歷程報告');
-  teacher_();
-  return HtmlService.createHtmlOutputFromFile('Teacher').setTitle('汽車電系雲端教師端');
+  // 教師管理改在試算表選單「汽車電系」操作；網頁部署只收學生上傳與查驗。
+  return ContentService.createTextOutput('汽車電系模擬教學平台：此網址只接收學生上傳。教師請開啟成績試算表，使用選單「汽車電系」。');
 }
 function listRecords() { teacher_();return locked_(function(){return rows_(sheet_('NTC_Grades')).map(function(r){return r.data;});}); }
 function importRecords(text, semester) {

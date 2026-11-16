@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-TW"><head><base target="_blank"><meta charset="UTF-8">
+<style>body{font:15px system-ui,sans-serif;color:#243746;margin:8px}input,button{font:inherit;padding:6px 10px;margin:3px}button{cursor:pointer}
+.row{margin:6px 0}.hint{color:#5d6d7e;font-size:13px}.bad{color:#c0392b}.ok{color:#1e8449}
+#cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.card{border:1px solid #ccd5df;border-radius:8px;padding:10px;text-align:center;break-inside:avoid}
+.card h3{margin:4px 0}.card .qr img{width:200px;height:200px;image-rendering:pixelated}.card textarea{width:100%;height:60px;font-size:11px}
+@media print{.noprint{display:none!important}body{margin:0}#cards{grid-template-columns:repeat(2,1fr)}.card textarea{display:none}.card .url{display:block;font-size:10px;word-break:break-all}}
+.card .url{display:none}</style></head><body>
+<div class="noprint">
+<div class="row">上傳網址：<input id="url" size="70" placeholder="https://script.google.com/macros/s/AKfycb…/exec（沒有部署就留白）"></div>
+<div class="row">老師稱呼：<input id="tname" size="12" placeholder="例如 林老師"> 班級代號：<input id="cls" size="10" placeholder="可留白"> 
+<button id="save">儲存並產生</button> <button id="print">列印 QR Code</button></div>
+<p id="msg" class="hint">上傳網址留白：學生只能下載成績檔（CSV）交給你。班級留白：學生自己填班級。每個班級可各印一張。</p>
+</div>
+<div id="cards"></div>
+<script>
+<!--VENDOR:qrcode.js-->
+</script>
+<script>
+const $=id=>document.getElementById(id);let info=null;
+function msg(t,c){$('msg').textContent=t;$('msg').className=c||'hint';}
+function link(u){const q=new URLSearchParams();if(info.deployId)q.set('u',info.deployId);const c=$('cls').value.trim();if(c)q.set('c',c);if(info.teacherName)q.set('t',info.teacherName);const s=q.toString();return info.site+u.path+(s?'?'+s:'');}
+function render(){
+  $('cards').replaceChildren();
+  info.units.concat([{name:'首頁（全部單元）',path:''}]).forEach(u=>{
+    const href=link(u),qr=qrcode(0,'M');qr.addData(href);qr.make();
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML='<h3></h3><div class="qr"></div><div class="url"></div><textarea readonly></textarea><button>複製連結</button> <a>開啟</a>';
+    d.querySelector('h3').textContent=u.name+($('cls').value.trim()?'｜'+$('cls').value.trim():'');
+    d.querySelector('.qr').innerHTML=qr.createImgTag(6,8);
+    d.querySelector('.url').textContent=href;d.querySelector('textarea').value=href;d.querySelector('a').href=href;
+    d.querySelector('button').onclick=()=>{const t=d.querySelector('textarea');t.select();document.execCommand('copy');msg('已複製「'+u.name+'」連結。','ok');};
+    $('cards').append(d);});
+  msg(info.deployId?'學生用這些連結進入，成績會上傳到這份試算表（需在課堂「開放上傳」）。':'目前沒有上傳網址：學生只能下載成績檔交給你。', info.deployId?'ok':'hint');
+}
+function call(fn,args,ok){google.script.run.withFailureHandler(e=>msg('未完成：'+e.message,'bad')).withSuccessHandler(ok)[fn](...args);}
+call('linkInfo',[],r=>{info=r;$('tname').value=r.teacherName;if(r.deployId)$('url').value='https://script.google.com/macros/s/'+r.deployId+'/exec';render();});
+$('save').onclick=()=>{msg('儲存中…');call('saveLinkInfo',[$('url').value,$('tname').value],r=>{info=r;render();});};
+$('cls').oninput=()=>{if(info)render();};
+$('print').onclick=()=>window.print();
+</script></body></html>
