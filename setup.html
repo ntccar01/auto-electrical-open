@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>老師設定說明｜汽車電系模擬教學平台</title>
+<style>
+:root{--ink:#243746;--muted:#5d6d7e;--line:#d5dde5;--accent:#1e8449;--warn:#b9770e;--bg:#f3f6f8}
+*{box-sizing:border-box}body{margin:0;font:17px/1.7 system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#1f2d3a;color:#fff;padding:28px 20px}header .wrap{max-width:980px;margin:auto}header h1{margin:0 0 6px;font-size:28px}header p{margin:0;color:#c9d6e2}
+nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}nav .wrap{max-width:980px;margin:auto;display:flex;gap:4px;overflow-x:auto;padding:6px 12px}
+nav a{white-space:nowrap;padding:6px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:15px}nav a:hover{background:var(--bg)}
+main{max-width:980px;margin:auto;padding:12px 16px 60px}section{background:#fff;border-radius:12px;padding:22px 24px;margin:18px 0}
+h2{margin:0 0 10px;font-size:23px}h3{margin:22px 0 6px;font-size:19px}.lead{font-size:18px}.muted{color:var(--muted);font-size:15px}
+.btn{display:inline-block;padding:10px 18px;border-radius:8px;border:0;background:var(--accent);color:#fff;font:inherit;font-weight:bold;text-decoration:none;cursor:pointer}
+.btn.alt{background:#2c3e50}.btn:disabled{opacity:.5;cursor:default}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:14px}.choice>div{border:1px solid var(--line);border-radius:10px;padding:14px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:12px;margin:22px 0}.num{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:bold;font-size:19px}
+.shot{display:block;max-width:100%;border:1px solid var(--line);border-radius:8px;margin:10px 0}.shot-missing{border:2px dashed var(--line);border-radius:8px;padding:18px;color:var(--muted);text-align:center;font-size:14px;margin:10px 0}
+details{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0}summary{cursor:pointer;font-weight:bold}
+code,kbd{background:#eef2f5;border-radius:4px;padding:1px 6px;font-family:ui-monospace,Consolas,monospace;font-size:.92em}
+.note{border-left:4px solid var(--warn);background:#fef9e7;padding:10px 14px;border-radius:6px;margin:12px 0}
+.ok{border-left-color:var(--accent);background:#eafaf1}
+textarea{width:100%;height:180px;font:12px ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:8px;padding:8px}
+ol.flow li{margin:4px 0}table{border-collapse:collapse;width:100%}td,th{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:20px}
+@media(max-width:700px){.choice{grid-template-columns:1fr}section{padding:16px}}
+</style></head><body>
+<header><div class="wrap"><h1>老師設定說明</h1><p>汽車電系模擬教學平台｜約 10 分鐘完成，不需要寫程式</p></div></header>
+<nav><div class="wrap"><a href="#what">這是什麼</a><a href="#method">收成績方式</a><a href="#setup">四步架設</a><a href="#class">上課前準備</a><a href="#update">更新程式</a><a href="#faq">常見問題</a><a href="#about">隱私與授權</a></div></nav>
+<main>
+
+<section id="what"><h2>這是什麼</h2>
+<p class="lead">學生用網頁模擬汽車電路的配線、量測與故障診斷；考評成績送到<strong>老師自己的 Google 試算表</strong>，作者看不到任何成績。</p>
+<p>學生網站大家共用，不用架站。每位老師只要建立一份成績試算表，再把帶有自己設定的連結（或 QR Code）發給學生。</p>
+<p><a class="btn alt" href="./" target="_blank">先試玩學生端（練習模式不用設定）</a></p>
+<p class="muted">目前單元：喇叭系統、起動系統。只收班級代號與座號，不收學生姓名。</p>
+</section>
+
+<section id="method"><h2>選擇收成績方式</h2>
+<div class="choice">
+<div><h3>線上上傳（建議）</h3><p>學生交卷後按「上傳成績」、輸入 6 碼代碼，成績直接進你的試算表。需要做第 3 步「部署」。</p></div>
+<div><h3>成績檔（CSV）</h3><p>學生下載成績檔，用通訊軟體傳給你，你在試算表一次匯入。不用部署，<strong>跳過第 3 步</strong>。</p></div>
+</div>
+<details><summary>怎麼知道我的帳號能不能用「線上上傳」？</summary>
+<p>做第 3 步時，如果「誰可以存取」的選單裡<strong>有「任何人」</strong>，就可以；只有「僅限我自己」或「學校網域內的使用者」，表示學校不允許，請改用成績檔方式。私人 Gmail 一定可以。</p></details>
+<p class="muted">兩種方式可以並用：線上上傳失敗時，學生畫面也會提供下載成績檔。</p>
+</section>
+
+<section id="setup"><h2>四步架設</h2>
+<p>請在<strong>電腦</strong>上操作（手機版試算表看不到自訂選單）。用哪個 Google 帳號做，成績就存在那個帳號的雲端硬碟。</p>
+
+<div class="step"><div class="num">1</div><div><h3>建立我的成績表</h3>
+<p><a class="btn" id="copyLink" href="https://docs.google.com/spreadsheets/d/1GDQkN6b3wAazf5W0sPJewd1Ul98VAruGsZa1xFoJjWs/copy" target="_blank">建立我的成績表</a></p>
+<p>按「建立副本」。試算表與程式會一起複製到你的雲端硬碟，可以自己改檔名。</p>
+<img class="shot" data-shot="01" alt="複製文件畫面">
+<details><summary>常見狀況</summary><p>出現「無法複製」：部分學校帳號禁止複製校外檔案，請改用私人 Gmail 建立。</p></details>
+</div></div>
+
+<div class="step"><div class="num">2</div><div><h3>初始設定</h3>
+<p>打開副本，等幾秒，上方選單會出現「<strong>汽車電系</strong>」。點「汽車電系 → ① 初始設定」→「開始設定」。</p>
+<img class="shot" data-shot="02" alt="汽車電系選單">
+<p>第一次會要求授權。Google 會顯示「<strong>這個應用程式未經 Google 驗證</strong>」：這是因為程式是老師自製、沒有送 Google 審查，不是病毒。點「<strong>進階</strong>」→「<strong>前往 汽車電系成績程式（不安全）</strong>」。</p>
+<img class="shot" data-shot="03" alt="未經驗證警告">
+<p>權限頁勾「<strong>全選</strong>」再按「繼續」。三項權限分別用來：讀寫這份試算表、檢查新版本（不傳送成績）、顯示選單對話框。</p>
+<img class="shot" data-shot="04" alt="權限勾選">
+<p>看到 ✅ 設定完成就好了。系統已自動建立成績、名單、證書三個工作表，並產生這份試算表專屬的簽章密鑰。</p>
+<img class="shot" data-shot="05" alt="設定完成">
+</div></div>
+
+<div class="step"><div class="num">3</div><div><h3>部署上傳網址 <span class="muted">（用成績檔方式可跳過）</span></h3>
+<ol class="flow"><li>試算表選「擴充功能 → Apps Script」。</li>
+<li>右上角「<strong>部署 → 新增部署作業</strong>」，齒輪選「<strong>網頁應用程式</strong>」。</li>
+<li>執行身分：<strong>我</strong>；誰可以存取：<strong>任何人</strong>。按「部署」。</li></ol>
+<img class="shot" data-shot="06" alt="新增部署作業">
+<p>複製「網頁應用程式」的網址（<code>https://script.google.com/macros/s/AKfycb…/exec</code>）。</p>
+<img class="shot" data-shot="07" alt="部署完成網址">
+<details><summary>常見狀況</summary>
+<p><strong>同時登入多個 Google 帳號</strong>時，部署可能跑到別的帳號。請用無痕視窗只登入一個帳號再做。</p>
+<p>部署網址打開只會看到一行說明文字，這是正常的：它只收學生上傳，管理功能都在試算表選單。</p></details>
+</div></div>
+
+<div class="step"><div class="num">4</div><div><h3>產生學生連結與 QR Code</h3>
+<p>試算表選「汽車電系 → ② 學生連結與 QR Code」，貼上第 3 步的網址（沒做就留白），填老師稱呼（學生畫面會顯示「成績將上傳給：○老師」）與班級代號，按「儲存並產生」。</p>
+<img class="shot" data-shot="08" alt="學生連結與 QR Code">
+<p>每個單元一張 QR Code，可列印貼在實習工場，或複製連結貼到班級群組。學生第一次從連結進入後，瀏覽器會記住你的設定。</p>
+</div></div>
+</section>
+
+<section id="class"><h2>上課前準備（每學期／每堂課）</h2>
+<table><tr><th>何時</th><th>做什麼</th><th>選單</th></tr>
+<tr><td>學期初</td><td>建立班級名單、列印 6 碼代碼條發給學生（代碼只顯示這一次，請當場列印）</td><td>名單與代碼</td></tr>
+<tr><td>學期初</td><td>發學生連結／QR Code（每班一張）</td><td>② 學生連結與 QR Code</td></tr>
+<tr><td>考評當堂</td><td>開放該班上傳（預設 50 分鐘，時間到自動關閉）</td><td>開放上傳</td></tr>
+<tr><td>課後</td><td>匯入學生傳來的成績檔（用線上上傳則免）</td><td>匯入成績檔</td></tr>
+<tr><td>課後</td><td>覆閱、調分（±10）、核章</td><td>覆閱與核章</td></tr></table>
+<img class="shot" data-shot="09" alt="開放上傳面板">
+<img class="shot" data-shot="10" alt="名單與代碼面板">
+<div class="note">學生忘記代碼：在「名單與代碼」重設該座號，舊代碼立即失效。同一座號輸錯 5 次會鎖 10 分鐘。</div>
+</section>
+
+<section id="update"><h2>更新程式</h2>
+<p>試算表選「汽車電系 → 檢查更新」會告訴你有沒有新版。有新版時照下面五步更新，<strong>成績資料不會受影響</strong>。</p>
+<p id="ver" class="muted">正在讀取最新版本…</p>
+<p><button class="btn" id="copyCode" disabled>📋 一鍵複製最新程式</button> <span id="copyMsg" class="muted"></span></p>
+<details><summary>顯示程式碼（自動複製失敗時用）</summary><textarea id="codeBox" readonly></textarea></details>
+<ol class="flow"><li>試算表選「擴充功能 → Apps Script」，點左側 <code>程式碼.gs</code>。</li>
+<li>點程式區，按 <kbd>Ctrl</kbd>+<kbd>A</kbd> 全選，再按 <kbd>Ctrl</kbd>+<kbd>V</kbd> 貼上新程式。</li>
+<li>按 <kbd>Ctrl</kbd>+<kbd>S</kbd> 儲存。</li>
+<li>有做第 3 步的老師：右上角「部署 → 管理部署作業」→ 鉛筆圖示「編輯」。</li>
+<li>版本選「<strong>新版本</strong>」→「部署」。網址不會變，學生連結不用重發。</li></ol>
+<div class="note ok">新版程式讀得懂舊版的資料；暫時不更新也能繼續使用。</div>
+</section>
+
+<section id="faq"><h2>常見問題</h2>
+<details><summary>學生上傳顯示「目前沒有開放上傳」</summary><p>請確認「開放上傳」輸入的班級代號和學生登入的班級完全相同（例如 11601 與 11606 不同），並且還在開放時間內。</p></details>
+<details><summary>學生上傳顯示「代碼錯誤」</summary><p>確認座號正確；代碼不分大小寫，容易混淆的 0/O、1/I/L 不會出現在代碼中。忘記就到「名單與代碼」重設。</p></details>
+<details><summary>匯入成績檔顯示「內容被修改」或「可讀欄位被修改」</summary><p>檔案被開啟編輯後另存過（例如用 Excel 開啟後存檔）。請學生重新下載原始檔傳給你。</p></details>
+<details><summary>只想讓學生練習，不收成績</summary><p>不用做任何設定，直接把網站網址給學生，使用練習模式即可。</p></details>
+<details><summary>可以多位老師共用一份試算表嗎？</summary><p>目前只有執行初始設定的帳號能使用管理選單。每位老師各自建立一份最單純。</p></details>
+<details><summary>學生用了別位老師的連結</summary><p>請學生改用你的連結或 QR Code 再進入一次，瀏覽器就會換成你的設定。</p></details>
+</section>
+
+<section id="about"><h2>隱私、授權與聯絡</h2>
+<p>只收班級代號與座號；成績只存在老師自己的試算表。詳見 <a href="PRIVACY.md">隱私說明</a>。</p>
+<p>本平台以 <a href="LICENSE.md">CC BY-NC 4.0</a> 授權：可自由於教學中使用、改作與分享，須註明出處，不得用於商業目的。作者：林慶泓 老師（國立臺東專科學校 汽車科）。</p>
+<p id="reportWrap">問題回報：<a id="reportLink" href="#" target="_blank">問題回報表單</a></p>
+</section>
+</main>
+<footer>汽車電系模擬教學平台｜CC BY-NC 4.0</footer>
+<script>
+// 截圖：docs/setup/NN.png；缺圖時顯示待補框
+document.querySelectorAll('img[data-shot]').forEach(img=>{
+  img.onerror=()=>{const d=document.createElement('div');d.className='shot-missing';d.textContent='（截圖 '+img.dataset.shot+'：'+img.alt+'）';img.replaceWith(d);};
+  img.src='docs/setup/'+img.dataset.shot+'.png';});
+// 問題回報表單網址（尚未設定時隱藏）
+const REPORT_FORM='';
+if(REPORT_FORM)document.getElementById('reportLink').href=REPORT_FORM;else document.getElementById('reportWrap').hidden=true;
+// 最新版本與程式碼
+(async()=>{const ver=document.getElementById('ver'),btn=document.getElementById('copyCode'),box=document.getElementById('codeBox');
+  try{const v=await (await fetch('dist/version.json',{cache:'no-store'})).json();
+    ver.innerHTML='';const b=document.createElement('b');b.textContent='最新版本 '+v.version+'（'+v.date+'）';ver.append(b);
+    if(v.notes&&v.notes.length){const ul=document.createElement('ul');v.notes.forEach(n=>{const li=document.createElement('li');li.textContent=n;ul.append(li);});ver.append(ul);}
+    box.value=await (await fetch('dist/Code.gs',{cache:'no-store'})).text();btn.disabled=false;
+  }catch(e){ver.textContent='讀取失敗，請重新整理頁面。';}
+  btn.onclick=async()=>{const m=document.getElementById('copyMsg');try{await navigator.clipboard.writeText(box.value);m.textContent='✅ 已複製，請到 Apps Script 貼上。';}
+    catch(e){box.closest('details').open=true;box.select();m.textContent=document.execCommand('copy')?'✅ 已複製。':'請手動全選下方程式碼複製。';}};
+})();
+</script>
+</body></html>

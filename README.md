@@ -9,7 +9,9 @@
 
 ## 給老師
 
-設定說明頁（建置中）完成前，請參考 `gas/README.md`。歡迎來信或開 Issue 回報問題與建議。
+請看設定說明頁：https://ntccar01.github.io/auto-electrical-open/setup.html （約 10 分鐘，不需要寫程式）。
+
+開發者：程式原始碼在 `gas/src`，`node tools/build-gas.cjs` 打包成 `dist/Code.gs`。
 
 ## 授權
 
