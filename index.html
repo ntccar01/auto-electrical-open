@@ -13,7 +13,9 @@
     .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .unit-card { display: block; background: #fff; border-radius: 10px; padding: 20px; text-decoration: none; color: #2c3e50; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-top: 6px solid #2e86c1; transition: transform 0.15s; }
     .unit-card:hover { transform: translateY(-3px); }
-    .unit-card h2 { margin: 0 0 6px; font-size: 20px; }
+    .unit-card h2 { margin: 0 0 6px; font-size: 22px; color: #1f2d3a !important; text-shadow: none; opacity: 1; }
+    .unit-card.soon h2 { color: #5d6d7e !important; }
+    .teacher-hello { text-align: center; color: #fff; background: rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 14px; margin: 0 auto 18px; max-width: 520px; font-weight: bold; }
     .unit-card p { margin: 4px 0; font-size: 14px; color: #5d6d7e; }
     .unit-card .go { display: inline-block; margin-top: 10px; background: #2e86c1; color: #fff; font-size: 14px; padding: 6px 16px; border-radius: 5px; }
     .unit-card.done { border-top-color: #27ae60; }
@@ -72,5 +74,21 @@
     </div>
 </div>
     <script src="shared/js/config.js"></script>
+    <script>
+    // 學生從老師連結進來：顯示老師、隱藏老師用的入口
+    (function () {
+        var t = window.NTC_CONFIG && NTC_CONFIG.teacher;
+        if (!t || !t.linked) return;
+        var links = document.querySelector('.portal-links');
+        if (links) links.style.display = 'none';
+        var grid = document.querySelector('.unit-card') && document.querySelector('.unit-card').parentNode;
+        if (grid && (t.name || t.cls)) {
+            var p = document.createElement('div');
+            p.className = 'teacher-hello';
+            p.textContent = (t.cls ? '班級 ' + t.cls + '　' : '') + (t.name ? '授課老師：' + t.name : '');
+            grid.parentNode.insertBefore(p, grid);
+        }
+    })();
+    </script>
 </body>
 </html>
