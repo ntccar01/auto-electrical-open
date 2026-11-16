@@ -202,3 +202,6 @@
 .btn-cloud[hidden] { display: none !important; }
 .btn-home { display: block; margin-top: 4px; padding: 8px; text-align: center; color: #555; font-size: 15px; text-decoration: none; border-radius: 8px; }
 .btn-home:hover { background: #f0f0f0; color: #222; }
+
+.meter-reset { position: absolute; top: 8px; right: 8px; z-index: 3; padding: 4px 10px; font-size: 13px; border: 1px solid #7f8c8d; border-radius: 6px; background: #2c3e50; color: #ecf0f1; cursor: pointer; }
+.meter-reset:hover { background: #3d566e; }
