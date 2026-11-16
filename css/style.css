@@ -221,3 +221,5 @@
 .neg-off .neg-toggle rect { fill: #b9770e; stroke: #935f0b; }
 .neg-status { font-size: 11px; fill: #5d6d7e; font-family: "Microsoft JhengHei", sans-serif; }
 .neg-off .neg-status { fill: #c0392b; font-weight: bold; }
+.neg-toggle:focus { outline: none; }
+.neg-toggle:focus-visible rect { stroke: #f1c40f; stroke-width: 2; }
