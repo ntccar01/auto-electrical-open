@@ -49,8 +49,8 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:20px}
 
 <div class="step"><div class="num">1</div><div><h3>建立我的成績表</h3>
 <p><a class="btn" id="copyLink" href="https://docs.google.com/spreadsheets/d/1GDQkN6b3wAazf5W0sPJewd1Ul98VAruGsZa1xFoJjWs/copy" target="_blank">建立我的成績表</a></p>
-<p>按「建立副本」。試算表與程式會一起複製到你的雲端硬碟，可以自己改檔名。</p>
-<img class="shot" data-shot="01" alt="複製文件畫面">
+<p>按「建立副本」。試算表與程式會一起複製到你的雲端硬碟，並自動打開副本（檔名後面多了「副本」，可以自己改名，例如「汽車電系成績 115-1」）。</p>
+<img class="shot" data-shot="01" alt="複製完成的副本">
 <details><summary>常見狀況</summary><p>出現「無法複製」：部分學校帳號禁止複製校外檔案，請改用私人 Gmail 建立。</p></details>
 </div></div>
 
@@ -66,11 +66,11 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:20px}
 </div></div>
 
 <div class="step"><div class="num">3</div><div><h3>部署上傳網址 <span class="muted">（用成績檔方式可跳過）</span></h3>
-<ol class="flow"><li>試算表選「擴充功能 → Apps Script」。</li>
-<li>右上角「<strong>部署 → 新增部署作業</strong>」，齒輪選「<strong>網頁應用程式</strong>」。</li>
-<li>執行身分：<strong>我</strong>；誰可以存取：<strong>任何人</strong>。按「部署」。</li></ol>
-<img class="shot" data-shot="06" alt="新增部署作業">
-<p>複製「網頁應用程式」的網址（<code>https://script.google.com/macros/s/AKfycb…/exec</code>）。</p>
+<ol class="flow"><li>試算表選「擴充功能 → Apps Script」。</li></ol>
+<img class="shot" data-shot="06" alt="開啟 Apps Script">
+<ol class="flow" start="2"><li>右上角「<strong>部署 → 新增部署作業</strong>」，齒輪選「<strong>網頁應用程式</strong>」。</li>
+<li>說明可填「學生上傳」；執行身分：<strong>我</strong>；誰可以存取：<strong>任何人</strong>。按「部署」（第一次會再要求授權一次，同第 2 步）。</li></ol>
+<p>部署完成後，按「網頁應用程式」網址下方的「<strong>複製</strong>」（<code>https://script.google.com/macros/s/AKfycb…/exec</code>）。上面的「部署作業 ID」不用管。</p>
 <img class="shot" data-shot="07" alt="部署完成網址">
 <details><summary>常見狀況</summary>
 <p><strong>同時登入多個 Google 帳號</strong>時，部署可能跑到別的帳號。請用無痕視窗只登入一個帳號再做。</p>
@@ -79,7 +79,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:20px}
 
 <div class="step"><div class="num">4</div><div><h3>產生學生連結與 QR Code</h3>
 <p>試算表選「汽車電系 → ② 學生連結與 QR Code」，貼上第 3 步的網址（沒做就留白），填老師稱呼（學生畫面會顯示「成績將上傳給：○老師」）與班級代號，按「儲存並產生」。</p>
-<img class="shot" data-shot="08" alt="學生連結與 QR Code">
+<img class="shot" data-shot="08" alt="學生連結與 QR Code（貼上網址、填老師稱呼）">
 <p>每個單元一張 QR Code，可列印貼在實習工場，或複製連結貼到班級群組。學生第一次從連結進入後，瀏覽器會記住你的設定。</p>
 </div></div>
 </section>
