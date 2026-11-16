@@ -131,7 +131,7 @@ document.querySelectorAll('img[data-shot]').forEach(img=>{
   img.onerror=()=>{const d=document.createElement('div');d.className='shot-missing';d.textContent='（截圖 '+img.dataset.shot+'：'+img.alt+'）';img.replaceWith(d);};
   img.src='docs/setup/'+img.dataset.shot+'.png';});
 // 問題回報表單網址（尚未設定時隱藏）
-const REPORT_FORM='';
+const REPORT_FORM='https://docs.google.com/forms/d/e/1FAIpQLScrF5lTobxL4tUuCDNUVt8PTISCWiZxov22DiE0pUG4tfvsbw/viewform';
 if(REPORT_FORM)document.getElementById('reportLink').href=REPORT_FORM;else document.getElementById('reportWrap').hidden=true;
 // 最新版本與程式碼
 (async()=>{const ver=document.getElementById('ver'),btn=document.getElementById('copyCode'),box=document.getElementById('codeBox');
