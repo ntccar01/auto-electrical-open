@@ -1,0 +1,14 @@
+# 開發接續
+
+- 先讀 CLAUDE.md、工作筆記.md。
+- 功能變更後執行 `node --test tests/regression.test.cjs tests/gas.test.cjs tests/csv.test.cjs`。涉及頁面互動時依 tests/README.md 執行 browser.cjs。
+- 等使用者指示或說「收工」才 commit。不得自行 push、部署、變更雲端分享權限或重寫 Git 歷史。
+- 只收集班級代號與座號；雲端匯入必須以白名單教師身分執行，學生提交檔不得自帶可信核章。
+- 學生成績檔（CSV）以 6 碼代碼簽章：`shared/js/submission.js` 與 `gas/Code.gs` 的簽章契約（代碼字元集與檢查碼、pinKey、HMAC 對象）必須一致，改動任一邊須同步並跑 tests/csv.test.cjs。名單只存 pinKey，不得保存或記錄代碼原文。
+- 學生線上上傳（doPost）是唯一公開寫入端點：僅在教師開放時段、名單內座號、代碼簽章正確時寫入，錯誤計數鎖定；不得放寬為無代碼或無開放時段寫入，不得讓公開部署執行教師函式。
+- 考評「通過」＝診斷正確＋配線完成＋至少 2 筆有效量測（電壓與電阻檔都用到）＋總分 ≥ 60（`ASSESS.passGate`）；考評未通過不得顯示或匯出正確答案。
+- 不提交金鑰、憑證、教材 PDF 或 tmp/、test-results/ 的輸出。
+- 維持純 HTML／CSS／JavaScript 學生端；GAS 僅放在 gas/。測試環境 mock 不等於 Google 線上驗證。
+
+- 新增功能、調整進度或完成驗收時，同步更新 project-guide.js（開發導覽入口的狀態、歷程、連結及待辦）與工作筆記.md；清楚區分本機 mock、雲端實測及尚未部署。導覽不得放金鑰、憑證或學生專屬資料。
+- 所有電系單元必須實作「拆下／接回電瓶負極」斷電量電阻程序與帶電量電阻 LIVE 防護（規格見 CLAUDE.md〈斷電量電阻程序〉）；不得以刪線代替斷電，斷電不得影響配線檢核。

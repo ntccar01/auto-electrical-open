@@ -1,0 +1,199 @@
+/* V2-P0: extracted from V52 single-file, no visual changes */
+
+/* V2.1 線束斷點視覺＋分組 radio 故障面板 */
+.break-gap { fill: #ffffff; stroke: #c0392b; stroke-width: 1; stroke-dasharray: 2,2; }
+.break-stub { stroke: #b87333; stroke-width: 3; stroke-linecap: round; }
+.break-x { font-size: 12px; fill: #c0392b; font-weight: bold; }
+.break-x-sm { font-size: 10px; }
+.break-x-badge { font-size: 11px; }
+#faultPanel .fgroup { margin-top: 10px; }
+#faultPanel .fgroup h4 { margin: 8px 0 4px; font-size: 14px; color: #f1c40f; border-bottom: 1px solid #566573; padding-bottom: 2px; }
+#faultPanel .fpick { display: block; font-size: 14px; padding: 6px 4px; margin: 0; cursor: pointer; border-radius: 4px; }
+#faultPanel .fpick:hover { background: #34495e; }
+#faultPanel .fpick input { margin-right: 6px; width: 16px; height: 16px; vertical-align: middle; }
+#faultClearBtn { width: 100%; margin-top: 12px; padding: 8px; border: none; border-radius: 5px; background: #95a5a6; color: #fff; font-family: "Microsoft JhengHei"; font-size: 14px; cursor: pointer; }
+#faultClearBtn:hover { background: #7f8c8d; }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            background-color: #2c3e50;
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; /* 改為 min-height 確保內容多時能延伸 */
+            user-select: none;
+        }
+        h2 { color: #ecf0f1; margin-bottom: 5px; }
+        .status-bar { color: #bdc3c7; font-size: 14px; margin-bottom: 10px; height: 20px; display: flex; gap: 20px;}
+        .student-info { color: #f1c40f; font-weight: bold; }
+        .mode-indicator { font-weight: bold; padding: 2px 8px; border-radius: 4px; }
+        .mode-practice { background: #3498db; color: white; }
+        .mode-exam { background: #e74c3c; color: white; }
+
+        .main-layout { display: flex; gap: 20px; background-color: #ecf0f1; padding: 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; }
+        .circuit-area { position: relative; background-color: white; border: 2px solid #bdc3c7; border-radius: 8px; }
+        .meter-area { position: relative; width: 300px; height: 600px; background-color: #34495e; border-radius: 8px; border: 2px solid #2c3e50; }
+        svg { overflow: visible; }
+
+        /* Footer V52 新增樣式 */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 14px;
+            line-height: 1.6;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+        .footer .version {
+            font-weight: bold;
+            color: #bdc3c7;
+            font-size: 16px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-box { background: white; padding: 30px; border-radius: 10px; width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); box-sizing: border-box; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+        .modal-box h2 { color: #2c3e50; margin-top: 0; margin-bottom: 20px; }
+
+        .mode-selection-btns { display: flex; flex-direction: column; gap: 15px; }
+        .btn-mode { padding: 15px; font-size: 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; color: white; transition: transform 0.1s; }
+        .btn-mode:active { transform: scale(0.98); }
+        .btn-practice { background-color: #3498db; }
+        .btn-practice:hover { background-color: #2980b9; }
+        .btn-exam { background-color: #e74c3c; }
+        .btn-exam:hover { background-color: #c0392b; }
+
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .btn-primary { background-color: #27ae60; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .btn-primary:hover { background-color: #219150; }
+        .btn-back { background: transparent; border: none; color: #7f8c8d; cursor: pointer; margin-top: 10px; text-decoration: underline; }
+
+        .radio-group { text-align: left; margin: 20px 0; max-height: 300px; overflow-y: auto; }
+        /* 複合題同時有故障與證據兩個清單：依螢幕高度縮小，讓「確認送出」不必捲動也看得到 */
+        #quizMulti .radio-group { margin: 10px 0; max-height: min(300px, 26vh); }
+        .radio-item { margin-bottom: 10px; padding: 10px; border: 1px solid #ecf0f1; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+        .radio-item:hover { background-color: #f7f9f9; }
+        .radio-item label { cursor: pointer; width: 100%; display: block; }
+        .result-success { color: #27ae60; font-size: 24px; font-weight: bold; }
+        .result-fail { color: #c0392b; font-size: 24px; font-weight: bold; }
+
+        .controls-container { position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 100; }
+        .action-btn { padding: 10px 16px; color: white; border: none; border-radius: 5px; font-family: "Microsoft JhengHei"; font-size: 14px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: background-color 0.2s; }
+        .btn-fault { background-color: #3498db; } .btn-fault:hover { background-color: #2980b9; }
+        .btn-submit { background-color: #27ae60; } .btn-submit:hover { background-color: #219150; }
+        .btn-switch { background-color: #8e44ad; } .btn-switch:hover { background-color: #732d91; }
+        .btn-guide { background-color: #e67e22; } .btn-guide:hover { background-color: #d35400; }
+
+        .start-controls { position: static; margin: 15px; flex-wrap: wrap; }
+        .start-controls .clear-btn, .start-controls .del-btn { position: static; }
+        .clear-btn { position: absolute; bottom: 15px; left: 15px; padding: 8px 16px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
+        .del-btn { position: absolute; bottom: 15px; left: 125px; padding: 8px 16px; background-color: #e67e22; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; font-family: "Microsoft JhengHei"; font-size: 14px; }
+        .del-btn:hover { background-color: #d35400; }
+        .iso-btn { position: absolute; bottom: 60px; left: 15px; padding: 8px 16px; background-color: #34495e; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; font-family: "Microsoft JhengHei"; font-size: 14px; }
+        .iso-btn.isolated { background-color: #b9770e; }
+        .del-btn.active-del { background-color: #c0392b; }
+        #circuitSvg.delete-mode .wire { cursor: pointer; }
+        #circuitSvg.delete-mode .wire:hover { stroke: #e74c3c; stroke-width: 5; }
+        #circuitSvg.delete-mode .conn-point { cursor: not-allowed; }
+        /* P1 觸控：SVG 內拖曳不觸發捲動/縮放手勢 */
+        #circuitSvg, #meterSvg { touch-action: none; }
+        /* 起動單元：控制列＋電磁開關刀片＋小齒輪 */
+        .control-bar { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; background: #ecf0f1; border-radius: 8px; padding: 8px 14px; margin-bottom: 10px; font-size: 14px; color: #2c3e50; }
+        .ctl-btn { padding: 6px 12px; border: 1px solid #7f8c8d; border-radius: 5px; background: #fff; cursor: pointer; font-family: "Microsoft JhengHei"; font-size: 14px; }
+        .ctl-btn:hover { background: #d5dbdb; }
+        .ctl-btn.active { background: #1a5276; color: #fff; border-color: #1a5276; font-weight: bold; }
+        #igStBtn.active { background: #c0392b; border-color: #c0392b; }
+        .sol-box { fill: #d9ead3; stroke: #000; stroke-width: 2; }
+        .mot-box { fill: #cfe2f3; stroke: #000; stroke-width: 2; }
+        .sol-blade { stroke: #000; stroke-width: 2; transition: all 0.15s; transform-box: fill-box; transform-origin: 0% 100%; }
+        .sol-on .sol-blade { transform: rotate(25deg); stroke: #28a745; }
+        .sol-blade.flowing { stroke: #ff5722; stroke-width: 3; }
+        /* 馬達運轉振動 */
+        @keyframes motVibe { 0%,100% { transform: translate(0,0); } 25% { transform: translate(1.5px,-1px); } 50% { transform: translate(-1.5px,1px); } 75% { transform: translate(1px,1.5px); } }
+        .mot-vibe { animation: motVibe 0.16s linear infinite; transform-box: fill-box; transform-origin: center; }
+        /* 故障面板關閉鈕 */
+        .fp-close { float: right; background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; line-height: 1; }
+        /* P1 OEM 浮動線路圖 */
+        .btn-oem { background-color: #1a5276; } .btn-oem:hover { background-color: #154360; }
+        .btn-repair { background-color: #d35400; } .btn-repair:hover { background-color: #a04000; }
+        .repair-item { margin-bottom: 8px; }
+        #oemFloat { position: absolute; top: 20px; right: 20px; width: 380px; background: #fff; border: 2px solid #1a5276; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); z-index: 150; }
+        #oemHead { display: flex; justify-content: space-between; align-items: center; background: #1a5276; color: #fff; font-weight: bold; font-size: 14px; padding: 6px 10px; border-radius: 6px 6px 0 0; cursor: move; user-select: none; }
+        #oemHead button { margin-left: 4px; border: none; border-radius: 4px; background: #2e86c1; color: #fff; font-size: 12px; padding: 2px 7px; cursor: pointer; }
+        #oemHead button:hover { background: #1a5276; }
+        #oemHead .oem-tab.active { background: #f1c40f; color: #1a5276; }
+        #oemBody { padding: 8px; background: #fff; border-radius: 0 0 6px 6px; }
+        #oemTabDiagram img { width: 100%; display: block; }
+        table.oem-values { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.oem-values th, table.oem-values td { border: 1px solid #bdc3c7; padding: 5px 7px; text-align: left; }
+        table.oem-values th { background: #1a5276; color: #fff; }
+
+        /* 故障面板 (左側) */
+        #faultPanel { position: absolute; top: 20px; left: -250px; width: 230px; background: #2c3e50; color: white; padding: 15px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); transition: left 0.3s; z-index: 200; max-height: 80vh; overflow-y: auto; display: none; }
+        #faultPanel.visible { left: 20px; display: block; }
+        #faultPanel h3 { margin-top: 0; font-size: 16px; color: #f1c40f; }
+        #faultPanel label { display: block; margin-top: 10px; font-size: 14px; }
+        #faultPanel select { width: 100%; padding: 5px; margin-top: 3px; border-radius: 4px; }
+
+        .result-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-upload { background-color: #8e44ad; color: white; flex: 1; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        .btn-cloud { background-color: #1e8449; color: white; flex: 1; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        .btn-download { background-color: #2c3e50; color: white; flex: 1; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        .btn-restart { background-color: #95a5a6; color: white; flex: 1; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+
+        .hidden { display: none !important; }
+
+        /* SVG & Meter Styles */
+        .component-body { fill: #fff; stroke: #000; stroke-width: 2; }
+        .component-internal { fill: none; stroke: #000; stroke-width: 2; pointer-events: none; transition: stroke 0.3s; }
+        .fusible-link-wire { fill: none; stroke: #000; stroke-width: 4; pointer-events: none; transition: stroke 0.3s; }
+        .relay-coil-path { fill: none; stroke: #000; stroke-width: 2; transition: stroke 0.2s; }
+        .relay-switch-path { fill: none; stroke: #000; stroke-width: 2; transition: stroke 0.2s; }
+        .relay-switch-blade { stroke: #000; stroke-width: 2; transition: all 0.1s; transform-origin: 40px 80px; }
+        .relay-active .relay-coil-path { stroke: #007bff; stroke-width: 3; }
+        .relay-active .relay-switch-blade { transform: rotate(15deg); stroke: #28a745; }
+        @keyframes wireFlow { to { stroke-dashoffset: -15; } }
+        @keyframes componentFlow { to { stroke-dashoffset: -12; } }
+        .wire { fill: none; stroke: #d32f2f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; pointer-events: stroke; transition: stroke 0.3s; }
+        .wire.flowing { stroke: #ff5722; stroke-dasharray: 10, 5; animation: wireFlow 0.5s linear infinite; stroke-width: 4; }
+        .component-internal.flowing, .fusible-link-wire.flowing, .relay-switch-path.flowing, .relay-coil-path.flowing { stroke: #ff5722; stroke-width: 3; stroke-dasharray: 8, 4; animation: componentFlow 0.5s linear infinite; }
+        .relay-coil-path.flowing { stroke: #ff5722; stroke-dasharray: none; animation: none; }
+        .wire-preview { fill: none; stroke: #ff9800; stroke-width: 2; stroke-dasharray: 5,5; pointer-events: none; }
+        .wifi-signal { display: none; } .honking .wifi-signal { display: block; }
+        .wifi-arc { fill: none; stroke: #ff9800; stroke-width: 3; stroke-linecap: round; opacity: 0.2; }
+        .honking .wifi-arc { animation: wifi-blink 0.6s infinite ease-in-out; }
+        .honking .arc1 { animation-delay: 0s; } .honking .arc2 { animation-delay: 0.15s; } .honking .arc3 { animation-delay: 0.3s; }
+        @keyframes wifi-blink { 0% {opacity:0.2; stroke-width:3;} 50% {opacity:1; stroke-width:4; stroke:#ff5722;} 100% {opacity:0.2; stroke-width:3;} }
+        .conn-point { fill: #fff; stroke: #007bff; stroke-width: 2; cursor: pointer; transition: all 0.1s; }
+        .conn-point:hover { fill: #007bff; r: 7; }
+        .conn-point.active { fill: #28a745; stroke: #28a745; r: 7; }
+        .conn-point.probing { fill: #e74c3c !important; stroke: #c0392b !important; r: 8; }
+        .btn-pressed .btn-plunger { transform: translateY(5px); transition: transform 0.1s; }
+        #btn-hitbox { cursor: pointer; }
+        .meter-body { fill: #f1c40f; stroke: #f39c12; stroke-width: 3; rx: 15; } .meter-face-plate { fill: #222; } .meter-screen { fill: #bdc3c7; stroke: #7f8c8d; stroke-width: 2; } .meter-text { font-family: 'Courier New', monospace; font-weight: bold; fill: #2c3e50; } .scale-tick { fill: #f1c40f; } .scale-label { font-size: 10px; fill: #ecf0f1; text-anchor: middle; font-weight: bold; cursor: pointer; transition: fill 0.2s; } .scale-label:hover { fill: #f39c12; } .scale-group { cursor: pointer; } .meter-knob-body { fill: #111; stroke: #333; stroke-width: 1; } .meter-knob-indicator { fill: #ecf0f1; } .meter-knob-grip { fill: none; stroke: #333; stroke-width: 2; } .meter-jack { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 2; } .meter-jack-inner { fill: #34495e; } .probe-wire { fill: none; stroke-width: 4; stroke-linecap: round; pointer-events: none; } .probe-plug { cursor: grab; transition: transform 0.1s; } .probe-plug:active { cursor: grabbing; } .probe-tip { cursor: grab; transition: transform 0.1s linear; transform-origin: 0 0; } .probe-tip:active { cursor: grabbing; }
+
+/* 平板／小螢幕：避免固定寬度配線區被置中裁切。 */
+@media (max-width: 1200px) {
+    body { box-sizing: border-box; padding: 12px; }
+    .main-layout { box-sizing: border-box; flex-direction: column; align-items: center; width: min(100%, 844px); padding: 12px; }
+    .circuit-area { box-sizing: border-box; width: 100%; padding: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    #circuitSvg { display: block; flex: 0 0 100%; width: 100%; height: auto; }
+    .controls-container { position: static; flex-wrap: wrap; gap: 8px; }
+    .clear-btn, .del-btn, .iso-btn { position: static; }
+    .meter-area { flex: 0 0 auto; }
+    .status-bar { height: auto; min-height: 20px; max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .control-bar { box-sizing: border-box; max-width: 100%; }
+    .modal-box { box-sizing: border-box; max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); overflow: auto; padding: 20px; }
+    #oemFloat { box-sizing: border-box; max-width: calc(100% - 24px); right: 12px; }
+    .t-wrap { box-sizing: border-box; max-width: 100%; overflow-x: auto; }
+}
+
+.meter-safety { max-width: 1100px; padding: 12px; margin: 0 auto 12px; border: 2px solid #c0392b; border-radius: 6px; background: #fff3e0; color: #8b220f; }
+.ctl-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.flowing.flow-reverse { animation-direction: reverse; }
+
+#repairGuide { margin: 12px 15px; padding: 12px; line-height: 1.6; color: #203b4e; background: #edf6fb; border-left: 4px solid #24749a; overflow-wrap: anywhere; }
+@media (max-width: 1200px) { #repairGuide { flex: 1 1 100%; margin: 0; } }

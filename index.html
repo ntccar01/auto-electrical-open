@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汽車電系實習模擬教學平台</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+    .portal-wrap { max-width: 900px; margin: 0 auto; padding: 32px 16px 48px; }
+    .portal-hero { text-align: center; color: #fff; margin-bottom: 28px; }
+    .portal-hero h1 { font-size: 30px; margin: 0 0 8px; }
+    .portal-hero p { color: #bdc3c7; margin: 4px 0; font-size: 15px; }
+    .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .unit-card { display: block; background: #fff; border-radius: 10px; padding: 20px; text-decoration: none; color: #2c3e50; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-top: 6px solid #2e86c1; transition: transform 0.15s; }
+    .unit-card:hover { transform: translateY(-3px); }
+    .unit-card h2 { margin: 0 0 6px; font-size: 20px; }
+    .unit-card p { margin: 4px 0; font-size: 14px; color: #5d6d7e; }
+    .unit-card .go { display: inline-block; margin-top: 10px; background: #2e86c1; color: #fff; font-size: 14px; padding: 6px 16px; border-radius: 5px; }
+    .unit-card.done { border-top-color: #27ae60; }
+    .unit-card.soon { border-top-color: #95a5a6; opacity: 0.75; cursor: default; }
+    .unit-card.soon:hover { transform: none; }
+    .unit-card.soon .go { background: #95a5a6; }
+    .portal-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .portal-links a { color: #fff; background: #1a5276; text-decoration: none; font-size: 14px; padding: 8px 18px; border-radius: 5px; }
+    .portal-links a:hover { background: #2e86c1; }
+    .portal-foot { text-align: center; color: #bdc3c7; font-size: 13px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="portal-wrap">
+    <div class="portal-hero">
+        <h1>汽車電系實習模擬教學平台</h1>
+        <p>配線實作 ・ 故障查修 ・ 學習歷程 ・ 教師覆閱</p>
+        <p>選擇一個單元開始練習（練習模式免登入，考評與證書需填寫班級座號）</p>
+    </div>
+    <div class="unit-grid">
+        <a class="unit-card done" href="units/horn/">
+            <h2>🔔 喇叭系統</h2>
+            <p>繼電器控制 ・ 雙音喇叭 ・ 17 題查修題庫</p>
+            <p>狀態：已上線</p>
+            <span class="go">進入練習 →</span>
+        </a>
+        <a class="unit-card done" href="units/start/">
+            <h2>🔑 起動系統</h2>
+            <p>電磁開關 ・ 吸住/吸入線圈 ・ B-M 接點 ・ 三態模擬</p>
+            <p>狀態：已上線</p>
+            <span class="go">進入練習 →</span>
+        </a>
+        <div class="unit-card soon">
+            <h2>🔋 充電系統</h2>
+            <p>發電機 ・ 電壓調節器 ・ 充電指示燈</p>
+            <p>狀態：規劃中</p>
+            <span class="go">即將推出</span>
+        </div>
+        <div class="unit-card soon">
+            <h2>💡 燈光系統</h2>
+            <p>頭燈 ・ 方向燈 ・ 危險警告燈</p>
+            <p>狀態：規劃中</p>
+            <span class="go">即將推出</span>
+        </div>
+    </div>
+    <div class="portal-links">
+        <a href="project-guide.html">📖 專案開發導覽（進度／歷程／連結）</a>
+        <a href="teacher.html">👩‍🏫 教師端（成績／調分／發證）</a>
+        <a href="verify.html">🎓 證書驗證</a>
+    </div>
+    <div class="portal-foot">
+        <div>汽車電系實習模擬教學平台</div>
+        <div>開發者：國立臺東專科學校汽車科 林慶泓 老師 &amp; Gemini 共同創作</div>
+    </div>
+</div>
+</body>
+</html>
