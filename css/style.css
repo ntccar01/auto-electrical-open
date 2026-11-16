@@ -200,3 +200,5 @@
 
 .teacher-badge { margin: 6px 0 10px; padding: 6px 10px; border-radius: 6px; background: #e8f5e9; color: #1b5e20; font-weight: bold; }
 .btn-cloud[hidden] { display: none !important; }
+.btn-home { display: block; margin-top: 4px; padding: 8px; text-align: center; color: #555; font-size: 15px; text-decoration: none; border-radius: 8px; }
+.btn-home:hover { background: #f0f0f0; color: #222; }
