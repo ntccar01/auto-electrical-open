@@ -1,4 +1,4 @@
-/* 汽車電系模擬教學平台｜成績試算表程式 v1.0.0（2026-11-16）
+/* 汽車電系模擬教學平台｜成績試算表程式 v1.1.0（2026-11-16）
  * 授權：CC BY-NC 4.0　作者：林慶泓 老師（國立臺東專科學校 汽車科）
  * 這是打包後的單一檔案，請勿手改；原始碼在 gas/src。更新方法見 setup.html。 */
 
@@ -364,7 +364,7 @@ function doPost(e){
 /* ===== 試算表選單版（架構改造第 2 步）=====
  * 老師在自己的成績試算表副本操作；管理功能不再經由網頁部署。
  */
-var APP_VERSION_='1.0.0';
+var APP_VERSION_='1.1.0';
 var SITE_URL_='https://ntccar01.github.io/auto-electrical-open/';
 var UNITS_=[{id:'horn',name:'喇叭系統',path:'units/horn/'},{id:'start',name:'起動系統',path:'units/start/'}];
 
@@ -380,7 +380,7 @@ function onOpen() {
     .addItem('覆閱與核章','menuReview')
     .addSeparator()
     .addItem('檢查更新','menuUpdate')
-    .addSubMenu(ui.createMenu('進階').addItem('證書與面試報告','menuAdvanced'))
+    .addSubMenu(ui.createMenu('進階').addItem('證書與面試報告','menuAdvanced').addItem('匯入舊系統資料','menuMigrate'))
     .addToUi();
 }
 function onInstall(){onOpen();}
@@ -478,6 +478,48 @@ function menuUpdate(){
   try{r=checkUpdate_();}catch(e){ui.alert('檢查更新','目前版本 '+APP_VERSION_+'\n'+e.message,ui.ButtonSet.OK);return;}
   if(!r.newer){ui.alert('檢查更新','目前版本 '+r.current+'，已是最新版。',ui.ButtonSet.OK);return;}
   ui.alert('有新版本 '+r.latest,'目前版本 '+r.current+'；最新 '+r.latest+'（'+r.date+'）\n\n'+r.notes.map(function(n){return '・'+n;}).join('\n')+'\n\n更新方法請看：'+r.setup,ui.ButtonSet.OK);
+}
+
+/* 匯入舊系統資料：從舊成績試算表複製成績、名單（pinKey）、證書與面試報告；重複 ID 略過。
+ * 舊證書要能繼續查驗，需一併貼上舊專案的 CERT_SIGNING_KEY（只在新表還沒核發任何證書時才會替換）。 */
+var MIGRATE_SHEETS_=['NTC_Grades','NTC_Roster','NTC_Certificates','NTC_InterviewReports'];
+function sheetIdFrom_(text){
+  var s=String(text||'').trim(),m=s.match(/\/spreadsheets\/d\/([\w-]{20,})/)||s.match(/^([\w-]{20,})$/);
+  if(!m)throw new Error('請貼上舊成績試算表的網址。');return m[1];
+}
+function migrateFromOld(urlOrId,oldKey){
+  var email=teacher_(),props=PropertiesService.getScriptProperties(),srcId=sheetIdFrom_(urlOrId);
+  if(srcId===props.getProperty('SPREADSHEET_ID'))throw new Error('這就是目前這份試算表，請貼上「舊」系統的試算表網址。');
+  oldKey=String(oldKey||'').trim();
+  if(oldKey&&!/^[\w-]{32,200}$/.test(oldKey))throw new Error('舊簽章密鑰格式不對，請從舊專案「專案設定 → 指令碼屬性」複製 CERT_SIGNING_KEY 的值。');
+  var src;try{src=SpreadsheetApp.openById(srcId);}catch(e){throw new Error('打不開舊試算表：請確認目前登入的帳號能開啟它。');}
+  return locked_(function(){
+    var report={},certCount=rows_(sheet_('NTC_Certificates')).length+rows_(sheet_('NTC_InterviewReports')).length;
+    MIGRATE_SHEETS_.forEach(function(name){
+      var from=src.getSheetByName(name);report[name]={copied:0,skipped:0};if(!from)return;
+      var to=sheet_(name),seen=Object.create(null);rows_(to).forEach(function(r){seen[r.id]=true;});
+      var add=[];rows_(from).forEach(function(r){if(!r.id||seen[r.id]){report[name].skipped++;return;}seen[r.id]=true;add.push([r.id,JSON.stringify(r.data)]);});
+      if(add.length)to.getRange(to.getLastRow()+1,1,add.length,2).setValues(add);report[name].copied=add.length;
+    });
+    report.key='unchanged';
+    if(oldKey){if(certCount)report.key='kept';else{props.setProperty('CERT_SIGNING_KEY',oldKey);report.key='replaced';}}
+    report.by=email;return report;
+  });
+}
+function menuMigrate(){
+  if(needSetup_())return;
+  var html='<style>body{font:15px system-ui,sans-serif;color:#243746}input,button{font:inherit;padding:6px 10px;width:100%;box-sizing:border-box;margin:4px 0}button{background:#1e8449;color:#fff;border:0;border-radius:6px;cursor:pointer;width:auto}.hint{color:#5d6d7e;font-size:13px}.ok{color:#1e8449}.bad{color:#c0392b}</style>'
+    +'<p>舊成績試算表網址：<input id="url" placeholder="https://docs.google.com/spreadsheets/d/…"></p>'
+    +'<p>舊簽章密鑰（選填）：<input id="key" placeholder="舊 Apps Script → 專案設定 → 指令碼屬性 → CERT_SIGNING_KEY"></p>'
+    +'<p class="hint">會複製成績、名單（學生代碼不變，代碼條繼續有效）、證書與面試報告；已存在的紀錄自動略過，可以重複執行。要讓舊證書繼續查驗，請一併貼上舊密鑰。</p>'
+    +'<p><button id="go">開始匯入</button></p><p id="msg"></p>'
+    +'<script>var N={NTC_Grades:"成績",NTC_Roster:"名單",NTC_Certificates:"證書",NTC_InterviewReports:"面試報告"};'
+    +'document.getElementById("go").onclick=function(){var m=document.getElementById("msg"),b=this;b.disabled=true;m.className="";m.textContent="匯入中…";'
+    +'google.script.run.withFailureHandler(function(e){b.disabled=false;m.className="bad";m.textContent=e.message;}).withSuccessHandler(function(r){b.disabled=false;m.className="ok";'
+    +'m.textContent="✅ 完成："+Object.keys(N).map(function(k){return N[k]+" "+r[k].copied+" 筆（略過 "+r[k].skipped+"）";}).join("、")+"。"'
+    +'+(r.key==="replaced"?"已換成舊簽章密鑰，舊證書可繼續查驗。":r.key==="kept"?"新表已核發過證書，密鑰未替換。":"");})'
+    +'.migrateFromOld(document.getElementById("url").value,document.getElementById("key").value);};</script>';
+  SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutput(html).setWidth(560).setHeight(380),'匯入舊系統資料');
 }
 
 

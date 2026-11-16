@@ -85,3 +85,16 @@ test('GAS 選單版：初始設定、教師限定、學生連結與版本比對'
  assert.match(h.ctx.teacherPage_('roster').getContent(),/NTC_SECTION="roster"/);
  assert.ok(!/createHtmlOutputFromFile|createTemplateFromFile/.test(require('node:fs').readFileSync(require('node:path').join(__dirname,'../dist/Code.gs'),'utf8')));
 });
+
+test('GAS 選單版：匯入舊系統資料（略過重複、密鑰只在無證書時替換）',()=>{
+ const h=makeGAS();h.ctx.importRecords(JSON.stringify({version:1,records:[grade('R-old',70)]}),'115-1');
+ h.ctx.createRoster('11601',1,2);
+ const old=h.ctx.SpreadsheetApp.openById();// 同一個模擬活頁簿當作舊表
+ assert.throws(()=>h.ctx.migrateFromOld('https://docs.google.com/spreadsheets/d/old-sheet-id-00000000000/edit','x'),/簽章密鑰格式/);
+ assert.throws(()=>h.ctx.migrateFromOld('abc',''),/網址/);
+ h.properties.set('SPREADSHEET_ID','new-sheet-id-000000000000');
+ const r=h.ctx.migrateFromOld('https://docs.google.com/spreadsheets/d/old-sheet-id-00000000000/edit','K'.repeat(40));
+ assert.equal(r.NTC_Grades.copied,0);assert.equal(r.NTC_Grades.skipped,1);assert.equal(r.NTC_Roster.skipped,2);
+ assert.equal(r.key,'replaced');assert.equal(h.properties.get('CERT_SIGNING_KEY'),'K'.repeat(40));
+ h.setEmail('x@example.invalid');assert.throws(()=>h.ctx.migrateFromOld('old-sheet-id-00000000000',''),/無教師權限/);
+});
