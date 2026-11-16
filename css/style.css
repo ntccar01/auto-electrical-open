@@ -205,3 +205,19 @@
 
 .meter-reset { position: absolute; top: 8px; right: 8px; z-index: 3; padding: 4px 10px; font-size: 13px; border: 1px solid #7f8c8d; border-radius: 6px; background: #2c3e50; color: #ecf0f1; cursor: pointer; }
 .meter-reset:hover { background: #3d566e; }
+
+/* 電瓶負極拆離：統一放在電瓶負極與搭鐵之間（2026-11-16） */
+.neg-wire { stroke: #000; stroke-width: 2; }
+.neg-broken { display: none; }
+.neg-off .neg-strap { display: none; }
+.neg-off .neg-broken { display: inline; }
+.neg-lifted { stroke: #c0392b; stroke-width: 2.5; }
+.neg-clamp { fill: #c0392b; }
+.neg-x { fill: #c0392b; font-size: 15px; font-weight: bold; }
+.neg-toggle { cursor: pointer; }
+.neg-toggle rect { fill: #34495e; stroke: #2c3e50; }
+.neg-toggle:hover rect, .neg-toggle:focus rect { fill: #4a6785; }
+.neg-toggle-text { fill: #fff; font-size: 12px; font-weight: bold; pointer-events: none; font-family: "Microsoft JhengHei", sans-serif; }
+.neg-off .neg-toggle rect { fill: #b9770e; stroke: #935f0b; }
+.neg-status { font-size: 11px; fill: #5d6d7e; font-family: "Microsoft JhengHei", sans-serif; }
+.neg-off .neg-status { fill: #c0392b; font-weight: bold; }

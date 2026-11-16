@@ -303,9 +303,9 @@
         }
 
         function syncRepairPowerButton() {
-            const button = document.getElementById('isolatePowerBtn');
-            button.textContent = repairPowerIsolated ? '接回電瓶負極' : '拆離電瓶負極';
-            document.getElementById('batteryStatus').textContent = repairPowerIsolated ? '電瓶負極：已拆離' : '電瓶負極：已接妥';
+            const g = document.getElementById('battery'); if (g) g.classList.toggle('neg-off', repairPowerIsolated);
+            const t = document.querySelector('#isolatePowerBtn .neg-toggle-text'); if (t) t.textContent = repairPowerIsolated ? '🔌 接回負極' : '🔌 拆下負極';
+            const st = document.getElementById('batteryStatus'); if (st) st.textContent = repairPowerIsolated ? '電瓶負極：已拆離' : '電瓶負極：已接妥';
             document.getElementById('guidedRepairBtn').textContent = guidedRepair ? '結束引導查修' : '引導查修練習';
         }
 

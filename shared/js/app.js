@@ -641,9 +641,9 @@
 
         // 電瓶負極拆離（2026-11-12）：量電阻前斷電，學生配線保留；拆離時無回路、電壓為 0、喇叭不作動。
         function syncIsolationButton() {
-            const b = document.getElementById('isolateBtn'); if (!b) return;
-            b.textContent = batteryIsolated ? '🔌 接回電瓶負極' : '🔌 拆下電瓶負極';
-            b.classList.toggle('isolated', batteryIsolated);
+            const g = document.getElementById('battery'); if (g) g.classList.toggle('neg-off', batteryIsolated);
+            const t = document.querySelector('#isolateBtn .neg-toggle-text'); if (t) t.textContent = batteryIsolated ? '🔌 接回負極' : '🔌 拆下負極';
+            const st = document.getElementById('hornBatStatus'); if (st) st.textContent = batteryIsolated ? '電瓶負極：已拆離' : '電瓶負極：已接妥';
         }
         function toggleBatteryIsolation() {
             batteryIsolated = !batteryIsolated;
